@@ -90,7 +90,7 @@ def merge_sorted(xs, cmp=cmp_standard):
         half = len(real_xs) // 2
         left = merge_sorted(real_xs[:half], cmp)
         right = merge_sorted(real_xs[half:], cmp)
-        return _merged(left, right)
+        return _merged(left, right, cmp)
 
 def quick_sorted(xs, cmp=cmp_standard):
     '''
@@ -110,8 +110,10 @@ def quick_sorted(xs, cmp=cmp_standard):
                 greater.append(num)
             else:
                 equal.append(num)
-        return quick_sorted(less, cmp) + equal + quick_sorted(greater, cmp)
-        
+        if cmp == cmp_reverse:
+            return  quick_sorted(greater, cmp) + equal + quick_sorted(less, cmp)
+        else:
+            return quick_sorted(less, cmp) + equal + quick_sorted(greater, cmp)
 
 def quick_sort(xs, cmp=cmp_standard):
     '''
