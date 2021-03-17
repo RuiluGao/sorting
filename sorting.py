@@ -4,7 +4,8 @@ Python provides built-in sort/sorted functions that use timsort internally.
 You cannot use these built-in functions anywhere in this file.
 
 Every function in this file takes a comparator `cmp` as input
-which controls how the elements of the list should be compared against each other:
+which controls how the elements of the list
+should be compared against each other:
 If cmp(a, b) returns -1, then a < b;
 if cmp(a, b) returns  1, then a > b;
 if cmp(a, b) returns  0, then a == b.
@@ -12,6 +13,7 @@ if cmp(a, b) returns  0, then a == b.
 
 import random
 from copy import copy
+
 
 def cmp_standard(a, b):
     '''
@@ -62,7 +64,7 @@ def _merged(xs, ys, cmp=cmp_standard):
     x_index = 0
     y_index = 0
     while x_index < len(xs) and y_index < len(ys):
-        check = cmp(xs[x_index],ys[y_index])
+        check = cmp(xs[x_index], ys[y_index])
         if check == -1:
             mergedlist.append(xs[x_index])
             x_index += 1
@@ -92,6 +94,7 @@ def merge_sorted(xs, cmp=cmp_standard):
         right = merge_sorted(real_xs[half:], cmp)
         return _merged(left, right, cmp)
 
+
 def quick_sorted(xs, cmp=cmp_standard):
     '''
     '''
@@ -111,9 +114,10 @@ def quick_sorted(xs, cmp=cmp_standard):
             else:
                 equal.append(num)
         if cmp == cmp_reverse:
-            return  quick_sorted(greater, cmp) + equal + quick_sorted(less, cmp)
+            return quick_sorted(greater, cmp) + equal + quick_sorted(less, cmp)
         else:
             return quick_sorted(less, cmp) + equal + quick_sorted(greater, cmp)
+
 
 def quick_sort(xs, cmp=cmp_standard):
     '''
