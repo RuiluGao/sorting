@@ -11,6 +11,7 @@ if cmp(a, b) returns  0, then a == b.
 '''
 
 import random
+from copy import copy
 
 def cmp_standard(a, b):
     '''
@@ -57,87 +58,61 @@ def cmp_last_digit(a, b):
 
 
 def _merged(xs, ys, cmp=cmp_standard):
-    '''
-    Assumes that both xs and ys are sorted,
-    and returns a new list containing the elements of both xs and ys.
-    Runs in linear time.
+    mergedlist = []
+    x_index = 0
+    y_index = 0
+    while x_index < len(xs) and y_index < len(ys):
+        check = cmp(xs[x_index],ys[y_index])
+        if check == -1:
+            mergedlist.append(xs[x_index])
+            x_index += 1
+        if check == 1:
+            mergedlist.append(ys[y_index])
+            y_index += 1
+        if check == 0:
+            mergedlist.append(xs[x_index])
+            x_index += 1
+            mergedlist.append(ys[y_index])
+            y_index += 1
 
-    NOTE:
-    In python, helper functions are frequently prepended with the _.
-    This is a signal to users of a library that these functions are for "internal use only",
-    and not part of the "public interface".
-
-    This _merged function could be implemented as a local function within the merge_sorted scope rather than a global function.
-    The downside of this is that the function can then not be tested on its own.
-    Typically, you should only implement a function as a local function if it cannot function on its own
-    (like the go functions from binary search).
-    If it's possible to make a function stand-alone,
-    then you probably should do that and write test cases for the stand-alone function.
-
-    >>> _merged([1, 3, 5], [2, 4, 6])
-    [1, 2, 3, 4, 5, 6]
-    '''
+    if x_index < len(xs):
+        mergedlist += xs[x_index:]
+    if y_index < len(ys):
+        mergedlist += ys[y_index:]
+    return mergedlist
 
 
 def merge_sorted(xs, cmp=cmp_standard):
-    '''
-    Merge sort is the standard O(n log n) sorting algorithm.
-    Recall that the merge sort pseudo code is:
-
-        if xs has 1 element
-            it is sorted, so return xs
-        else
-            divide the list into two halves left,right
-            sort the left
-            sort the right
-            merge the two sorted halves
-
-    You should return a sorted version of the input list xs.
-    You should not modify the input list xs in any way.
-    '''
-
+    real_xs = copy(xs)
+    if len(real_xs) <= 1:
+        return real_xs
+    else:
+        half = len(real_xs) // 2
+        left = merge_sorted(real_xs[:half], cmp)
+        right = merge_sorted(real_xs[half:], cmp)
+        return _merged(left, right)
 
 def quick_sorted(xs, cmp=cmp_standard):
     '''
-    Quicksort is like mergesort,
-    but it uses a different strategy to split the list.
-    Instead of splitting the list down the middle,
-    a "pivot" value is randomly selected, 
-    and the list is split into a "less than" sublist and a "greater than" sublist.
-
-    The pseudocode is:
-
-        if xs has 1 element
-            it is sorted, so return xs
-        else
-            select a pivot value p
-            put all the values less than p in a list
-            put all the values greater than p in a list
-            put all the values equal to p in a list
-            sort the greater/less than lists recursively
-            return the concatenation of (less than, equal, greater than)
-
-    You should return a sorted version of the input list xs.
-    You should not modify the input list xs in any way.
     '''
-
+    real_xs = copy(xs)
+    if len(real_xs) <= 1:
+        return real_xs
+    else:
+        p = random.choice(real_xs)
+        less = []
+        greater = []
+        equal = []
+        for num in real_xs:
+            if num < p:
+                less.append(num)
+            elif num > p:
+                greater.append(num)
+            else:
+                equal.append(num)
+        return quick_sorted(less, cmp) + equal + quick_sorted(greater, cmp)
+        
 
 def quick_sort(xs, cmp=cmp_standard):
     '''
-    EXTRA CREDIT:
-    The main advantage of quick_sort is that it can be implemented "in-place".
-    This means that no extra lists are allocated,
-    or that the algorithm uses Theta(1) additional memory.
-    Merge sort, on the other hand, must allocate intermediate lists for the merge step,
-    and has a Theta(n) memory requirement.
-    Even though quick sort and merge sort both have the same Theta(n log n) runtime,
-    this more efficient memory usage typically makes quick sort faster in practice.
-    (We say quick sort has a lower "constant factor" in its runtime.)
-    The downside of implementing quick sort in this way is that it will no longer be a [stable sort](https://en.wikipedia.org/wiki/Sorting_algorithm#Stability),
-    but this is typically inconsequential.
-
-    Follow the pseudocode of the Lomuto partition scheme given on wikipedia
-    (https://en.wikipedia.org/wiki/Quicksort#Algorithm)
-    to implement quick_sort as an in-place algorithm.
-    You should directly modify the input xs variable instead of returning a copy of the list.
     '''
